@@ -23,6 +23,7 @@ SWP_NOMOVE = 0x0002
 # Key bindings
 key_bindings = {}
 key_states = {}
+double_tap_bindings = {}  # {key: delay_ms}
 
 # Mouse button constants
 MOUSEEVENTF_LEFTDOWN = 0x0002
@@ -74,6 +75,19 @@ def on_press(key_char):
                     mouse_controller.press(Button.right)
     except:
         pass
+
+def on_double_tap_press(key_char):
+    """Handle double tap when key is pressed"""
+    if key_char in double_tap_bindings:
+        delay = double_tap_bindings[key_char]
+        def repeat_key():
+            time.sleep(delay / 1000.0)
+            keyboard.press(key_char)
+            keyboard.release(key_char)
+            time.sleep(delay / 1000.0)
+            keyboard.press(key_char)
+            keyboard.release(key_char)
+        threading.Thread(target=repeat_key, daemon=True).start()
 
 def on_release(key_char):
     try:
@@ -223,6 +237,12 @@ KEY BINDINGS:
   bind list            - Show all bindings
   bind clear           - Clear all bindings
 
+DOUBLE TAP:
+  doubletap <key> <ms> - Press key twice with delay
+  dt <key> <ms>        - Alias for doubletap
+  dt %everything% <ms> - Press all bound keys twice
+  dt clear             - Clear all double tap bindings
+
 COORDINATES:
   pos               - Show current mouse position
   copy              - Copy current coordinates to clipboard
@@ -246,6 +266,9 @@ EXAMPLES:
   bind b m2
   bind list
   bind clear
+  dt a 10
+  dt %everything% 10
+  dt clear
 """)
 
 
@@ -449,6 +472,51 @@ def handle_command(cmd_input):
                 print(f"✓ Bound '{key}' to Right Mouse Button")
             else:
                 print("Error: Use m1 (left) or m2 (right)")
+    
+    elif cmd in ["doubletap", "dt"]:
+        if len(parts) < 2:
+            print("Usage: doubletap <key> <ms> | dt %everything% <ms> | dt clear | dt list")
+            return
+        
+        subcmd = parts[1].lower()
+        
+        if subcmd == "clear":
+            double_tap_bindings.clear()
+            print("✓ All double tap bindings cleared")
+        
+        elif subcmd == "list":
+            if not double_tap_bindings:
+                print("No double tap bindings set")
+            else:
+                for key, delay in double_tap_bindings.items():
+                    print(f"  {key} → {delay}ms")
+        
+        elif subcmd == "%everything%":
+            if len(parts) < 3:
+                print("Usage: dt %everything% <ms>")
+                return
+            try:
+                delay = int(parts[2])
+                if not double_tap_bindings:
+                    print("No double tap bindings set")
+                    return
+                count = len(double_tap_bindings)
+                print(f"✓ Registered double tap for {count} keys with {delay}ms delay")
+            except ValueError:
+                print("Error: Invalid delay value")
+        
+        else:
+            if len(parts) < 3:
+                print("Usage: doubletap <key> <ms>")
+                return
+            try:
+                key = parts[1]
+                delay = int(parts[2])
+                double_tap_bindings[key] = delay
+                keyboard.on_press_key(key, lambda k: on_double_tap_press(key))
+                print(f"✓ Registered double tap for '{key}' with {delay}ms delay")
+            except ValueError:
+                print("Error: Invalid delay value")
     
     else:
         print(f"Unknown command: {cmd}. Type 'help' for commands.")
