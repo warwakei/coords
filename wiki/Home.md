@@ -21,11 +21,11 @@ Coords is a mini shell application that provides:
 
 ## Features
 
-✨ **Live Coordinates** - Always see your cursor position  
-🎯 **Cursor Control** - Move cursor to exact coordinates  
-⌨️ **Key Bindings** - Bind keys to mouse buttons  
-🔄 **Double Tap** - Repeat keys with custom delays  
-🪟 **Window Management** - Lock or follow cursor position
+- Live Coordinates - Always see your cursor position
+- Cursor Control - Move cursor to exact coordinates
+- Key Bindings - Bind keys to mouse buttons
+- Double Tap - Repeat keys with custom delays
+- Window Management - Lock or follow cursor position
 
 ## Getting Help
 
