@@ -12,11 +12,11 @@ def build():
     PyInstaller.__main__.run([
         'main.py',
         '--onefile',
-        '--windowed',
         '--noupx',
         '--clean',
+        '--exclude-module', 'PyQt5',
         '--distpath', './dist',
-        '--buildpath', './build',
+        '--workpath', './build',
         '--specpath', './build',
     ])
 

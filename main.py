@@ -6,7 +6,7 @@ from ctypes import wintypes
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout
 from PyQt6.QtCore import Qt, QTimer, QPoint
 from PyQt6.QtGui import QFont
-from pynput import keyboard
+import keyboard
 from pynput.mouse import Button, Controller
 
 mouse_x = 0
@@ -22,8 +22,16 @@ SWP_NOMOVE = 0x0002
 
 # Key bindings
 key_bindings = {}
+key_states = {}
+
+# Mouse button constants
+MOUSEEVENTF_LEFTDOWN = 0x0002
+MOUSEEVENTF_LEFTUP = 0x0004
+MOUSEEVENTF_RIGHTDOWN = 0x0008
+MOUSEEVENTF_RIGHTUP = 0x0010
+
+listener_running = False
 mouse_controller = Controller()
-listener = None
 
 def get_mouse_pos():
     global mouse_x, mouse_y
@@ -51,33 +59,46 @@ def smooth_move_cursor(x, y, duration):
     
     move_cursor(x, y)
 
-def on_press(key):
+def mouse_event(flags: int, x: int = 0, y: int = 0) -> None:
+    ctypes.windll.user32.mouse_event(flags, x, y, 0, 0)
+
+def on_press(key_char):
     try:
-        key_char = key.char if hasattr(key, 'char') else str(key)
         if key_char in key_bindings:
-            button = key_bindings[key_char]
-            mouse_controller.press(button)
+            if key_char not in key_states:
+                key_states[key_char] = True
+                button_type = key_bindings[key_char]
+                if button_type == "m1":
+                    mouse_controller.press(Button.left)
+                elif button_type == "m2":
+                    mouse_controller.press(Button.right)
     except:
         pass
 
-def on_release(key):
+def on_release(key_char):
     try:
-        key_char = key.char if hasattr(key, 'char') else str(key)
-        if key_char in key_bindings:
-            button = key_bindings[key_char]
-            mouse_controller.release(button)
+        if key_char in key_bindings and key_char in key_states:
+            button_type = key_bindings[key_char]
+            del key_states[key_char]
+            if button_type == "m1":
+                mouse_controller.release(Button.left)
+            elif button_type == "m2":
+                mouse_controller.release(Button.right)
     except:
         pass
 
-def start_listener():
-    global listener
-    listener = keyboard.Listener(on_press=on_press, on_release=on_release)
-    listener.start()
+def listener_loop() -> None:
+    global listener_running
+    while listener_running:
+        time.sleep(0.1)
 
-def stop_listener():
-    global listener
-    if listener:
-        listener.stop()
+def start_listener() -> None:
+    global listener_running
+    listener_running = True
+
+def stop_listener() -> None:
+    global listener_running
+    listener_running = False
 
 class AnimatedLabel(QLabel):
     def __init__(self):
@@ -417,10 +438,14 @@ def handle_command(cmd_input):
             button_str = parts[2].lower()
             
             if button_str == "m1":
-                key_bindings[key] = Button.left
+                key_bindings[key] = "m1"
+                keyboard.on_press_key(key, lambda k: on_press(key))
+                keyboard.on_release_key(key, lambda k: on_release(key))
                 print(f"✓ Bound '{key}' to Left Mouse Button")
             elif button_str == "m2":
-                key_bindings[key] = Button.right
+                key_bindings[key] = "m2"
+                keyboard.on_press_key(key, lambda k: on_press(key))
+                keyboard.on_release_key(key, lambda k: on_release(key))
                 print(f"✓ Bound '{key}' to Right Mouse Button")
             else:
                 print("Error: Use m1 (left) or m2 (right)")
@@ -446,7 +471,8 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     overlay = CoordsOverlay()
     
-    start_listener()
+    listener_thread = threading.Thread(target=listener_loop, daemon=False)
+    listener_thread.start()
     
     console_thread = threading.Thread(target=console_loop, daemon=True)
     console_thread.start()
