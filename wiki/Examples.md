@@ -47,6 +47,26 @@ coords> window follow
 ✓ Window following cursor
 ```
 
+## Hide/Show Overlay
+
+Hide the overlay window:
+```
+coords> window hide
+✓ Window hidden
+```
+
+Show it again:
+```
+coords> window show
+✓ Window shown
+```
+
+Toggle visibility:
+```
+coords> window toggle
+✓ Window shown
+```
+
 ## Key Binding to Mouse Buttons
 
 Bind key 'a' to left mouse button:
@@ -55,11 +75,23 @@ coords> bind a m1
 ✓ Bound 'a' to Left Mouse Button
 ```
 
+Bind key 'b' to right mouse button:
+```
+coords> bind b m2
+✓ Bound 'b' to Right Mouse Button
+```
+
 View all bindings:
 ```
 coords> bind list
   a → Left
   b → Right
+```
+
+Clear all bindings:
+```
+coords> bind clear
+✓ All bindings cleared
 ```
 
 ## Double Tap Keys
@@ -70,13 +102,29 @@ coords> dt space 50
 ✓ Registered double tap for 'space' with 50ms delay
 ```
 
-Now pressing space will trigger it 3 times total (original + 2 repeats).
+Now pressing space will trigger it 3 times total (original + 2 repeats with 50ms delay between each).
+
+Register multiple keys:
+```
+coords> dt enter 100
+✓ Registered double tap for 'enter' with 100ms delay
+
+coords> dt shift 75
+✓ Registered double tap for 'shift' with 75ms delay
+```
 
 View double tap bindings:
 ```
 coords> dt list
   space → 50ms
   enter → 100ms
+  shift → 75ms
+```
+
+Clear all double tap bindings:
+```
+coords> dt clear
+✓ All double tap bindings cleared
 ```
 
 ## Calculate Distance
@@ -95,6 +143,14 @@ coords> copy
 ✓ Copied: 1920, 1080
 ```
 
+## Move to Screen Center
+
+Move cursor to the center of the screen:
+```
+coords> center
+✓ Cursor moved to screen center (1920, 1080)
+```
+
 ## Repeat Commands
 
 Execute a command multiple times:
@@ -103,6 +159,22 @@ coords> repeat 3 move 100 100
 [1/3] ✓ Cursor moved to (100, 100)
 [2/3] ✓ Cursor moved to (100, 100)
 [3/3] ✓ Cursor moved to (100, 100)
+```
+
+## Sleep and Delays
+
+Sleep for a specified duration:
+```
+coords> sleep 1000
+✓ Slept for 1000ms
+```
+
+## Print Text
+
+Echo text to console:
+```
+coords> echo Hello World
+Hello World
 ```
 
 ## Workflow Example
@@ -121,3 +193,19 @@ coords> move 200 200 -s 300
 coords> window hide
 ✓ Window hidden
 ```
+
+## Gaming Setup
+
+Bind keys for gaming:
+```
+coords> bind e m1
+✓ Bound 'e' to Left Mouse Button
+
+coords> bind r m2
+✓ Bound 'r' to Right Mouse Button
+
+coords> dt e 50
+✓ Registered double tap for 'e' with 50ms delay
+```
+
+Now 'e' triggers left click (3 times with double tap), 'r' triggers right click.

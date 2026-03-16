@@ -11,6 +11,12 @@ A: Yes, Coords is open source and free to use.
 **Q: Does it work on Mac/Linux?**
 A: Currently, Coords only supports Windows. The code uses Windows-specific APIs for cursor control.
 
+**Q: What's the difference between key bindings and double tap?**
+A: Key bindings map keys to mouse buttons (press 'a' = left click). Double tap makes a key repeat 3 times when pressed (original + 2 repeats).
+
+**Q: Can I use both key bindings and double tap on the same key?**
+A: Yes, you can bind a key to a mouse button and also register it for double tap.
+
 ## Installation & Setup
 
 **Q: Do I need Python installed?**
@@ -34,13 +40,16 @@ A: The overlay window shows your coordinates in real-time. You can also use the 
 A: Yes, use `window lock <X> <Y>` to lock it at a position, or `window follow` to make it follow your cursor.
 
 **Q: How do I hide the overlay?**
-A: Use `window hide` to hide it, `window show` to show it again.
+A: Use `window hide` to hide it, `window show` to show it again, or `window toggle` to toggle.
 
-**Q: What's the difference between key bindings and double tap?**
-A: Key bindings map keys to mouse buttons. Double tap makes a key repeat multiple times when pressed.
+**Q: How does double tap work?**
+A: Register a key with `dt space 50`. When you press space, it will press 3 times total: once immediately, then 2 more times with 50ms delay between each press.
 
-**Q: Can I use both key bindings and double tap on the same key?**
-A: Yes, you can bind a key to a mouse button and also register it for double tap.
+**Q: What's the maximum delay for double tap?**
+A: There's no hard limit, but practical delays are 10-500ms. Higher values may feel unresponsive.
+
+**Q: Can I bind any key?**
+A: Most keys work (a-z, 0-9, space, enter, shift, ctrl, alt, etc.). Some system keys may be reserved.
 
 ## Troubleshooting
 
@@ -51,13 +60,19 @@ A: Try running as administrator or check your display scaling settings.
 A: Make sure you're typing in the command prompt window, not elsewhere. Type `help` to see all commands.
 
 **Q: Key binding isn't working**
-A: Check that the key name is correct with `bind list`. Some keys might be reserved by your system.
+A: Check that the key name is correct with `bind list`. Some keys might be reserved by your system or other applications.
+
+**Q: Double tap isn't working**
+A: Verify the key is registered with `dt list`. Some applications may block key simulation.
 
 **Q: Cursor movement is jerky**
 A: Use the `-s` flag for smooth movement: `move 100 100 -s 500`
 
 **Q: The application crashes**
-A: Try running as administrator. If it persists, check that all dependencies are installed.
+A: Try running as administrator. If it persists, check that all dependencies are installed from requirements.txt.
+
+**Q: Copy command doesn't work**
+A: Make sure pyperclip is installed: `pip install pyperclip`
 
 ## Performance
 
@@ -73,17 +88,33 @@ A: Yes, but some games may block key bindings or cursor movement for security re
 ## Advanced
 
 **Q: Can I automate complex sequences?**
-A: Yes, use the `repeat` command to run commands multiple times, and `sleep` to add delays.
+A: Yes, use the `repeat` command to run commands multiple times, and `sleep` to add delays between actions.
 
 **Q: Can I save my bindings?**
-A: Currently, bindings are not saved between sessions. You'll need to set them up each time.
+A: Currently, bindings are not saved between sessions. You'll need to set them up each time you start the application.
+
+**Q: How do I calculate distances between points?**
+A: Use `dist <X> <Y>` to get the distance from your current cursor position to the specified coordinates.
+
+**Q: Can I move the cursor smoothly?**
+A: Yes, use `move <X> <Y> -s <ms>` where ms is the duration in milliseconds.
+
+**Q: Can I return the cursor to its original position?**
+A: Yes, use `move <X> <Y> -b <ms>` where ms is the delay before returning.
+
+**Q: How do I move to screen center?**
+A: Use the `center` command to move cursor to the middle of your screen.
+
+**Q: Can I copy coordinates to clipboard?**
+A: Yes, use the `copy` command to copy current coordinates.
+
+## Contributing
 
 **Q: How do I contribute?**
 A: Visit the [GitHub repository](https://github.com/warwakei/coords) to contribute.
 
-## Getting Help
+**Q: Where can I report bugs?**
+A: Open an issue on [GitHub Issues](https://github.com/warwakei/coords/issues)
 
-- Check the [Commands](./Commands.md) reference
-- Review [Examples](./Examples.md) for usage patterns
-- See [Keybindings](./Keybindings.md) for binding setup
-- Open an issue on [GitHub](https://github.com/warwakei/coords/issues)
+**Q: Can I request features?**
+A: Yes, open a feature request on [GitHub Issues](https://github.com/warwakei/coords/issues)
