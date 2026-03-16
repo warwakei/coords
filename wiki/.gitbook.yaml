@@ -1,4 +1,5 @@
 root: ./
+title: Coords
 
 structure:
   readme: Home.md
