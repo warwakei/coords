@@ -21,3 +21,12 @@ python main.py
 - Transparent overlay that doesn't block mouse clicks
 - Something as custom shell
 - Bind mouse buttons to keyboard keys (m1/m2, example: m1 on z)
+
+## Documentation
+
+Full documentation available in [Wiki](wiki/Home.md):
+- [Commands](wiki/Commands.md) - Complete command reference
+- [Examples](wiki/Examples.md) - Usage examples
+- [Installation](wiki/Installation.md) - Setup guide
+- [Keybindings](wiki/Keybindings.md) - Key binding setup
+- [FAQ](wiki/FAQ.md) - Frequently asked questions
